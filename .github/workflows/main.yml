@@ -1,0 +1,22 @@
+name: frontend-build
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: bahmutov/npm-install@v1
+        with:
+          useLockFile: true
+
+      - name: lint
+        run: npx eslint .
+
+      - name: app-build
+        run: npm run build
