@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useId, useRef, useState } from 'react';
+import { Skeleton, SkeletonItem } from '@fluentui/react-components';
 import { getPdfCanvas } from './pdfUtils.ts';
 import './pdfFile.less';
 
@@ -39,14 +40,14 @@ export function PdfFile(props: PdfFileProps) {
   const fetchCover = async () => {
     const stream = await data;
     const cover = await getPdfCanvas(stream, 1);
-    setCanvasNode([<CanvasContainer element={cover} />]);
+    setCanvasNode([<CanvasContainer key="1" element={cover} />]);
     setReady(true);
   };
 
   const fetchAll = async () => {
     const stream = await data;
     const covers = await getPdfCanvas(stream, [1, Infinity]);
-    setCanvasNode(covers.map(cover => <CanvasContainer element={cover} />));
+    setCanvasNode(covers.map((cover, index) => <CanvasContainer key={index} element={cover} />));
     setReady(true);
   };
 
@@ -59,10 +60,13 @@ export function PdfFile(props: PdfFileProps) {
     <div className={`pdf-file-${id}`}>
       {ready ?
         <>
-          <div className="pdf-file-album">{canvasNode.map(c => c)}</div>
+          <div className="pdf-album">{canvasNode.map(c => c)}</div>
           <div>{fileName}</div>
         </> :
-        <>loading</>
+        <Skeleton style={{ height: '100%' }}>
+          <SkeletonItem shape={'rectangle'} style={{ height: '100%', marginBottom: '10px' }} />
+          <SkeletonItem shape={'rectangle'} />
+        </Skeleton>
       }
     </div>
   );

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Button } from '@fluentui/react-components';
 import { isPdfFile } from './pdfUtils.ts';
 import { PdfFile } from './pdfFile.tsx';
 
@@ -30,8 +31,8 @@ function App() {
 
   return (
     <div className="app-container">
-      <button onClick={() => inputRef.current.click()}>add</button>
-      {files.map(f => <PdfFile fileName={f.name} data={f.arrayBuffer()} modifiedTime={f.lastModified} />)}
+      <Button onClick={() => inputRef.current.click()}>add</Button>
+      {files.map(f => <PdfFile key={f.size} fileName={f.name} data={f.arrayBuffer()} modifiedTime={f.lastModified} />)}
     </div>
   );
 }
