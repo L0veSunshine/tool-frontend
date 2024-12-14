@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@fluentui/react-components';
 import { isPdfFile } from './pdfUtils.ts';
 import { PdfFile } from './pdfFile.tsx';

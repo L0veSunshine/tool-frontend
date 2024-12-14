@@ -1,8 +1,7 @@
 import { isPdfFile as isNamePdfFile } from 'pdfjs-dist';
-import workerSrc from 'pdfjs-dist/build/pdf.worker?worker&url';
 import * as pdfjs from 'pdfjs-dist';
 
-pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
+pdfjs.GlobalWorkerOptions.workerPort = new Worker(new URL('pdfjs-dist/build/pdf.worker', import.meta.url));
 
 const PdfSignature = '255044462d';
 
@@ -26,14 +25,14 @@ interface Range {
 }
 
 async function getPdfCanvas(data: ArrayBuffer, pageRange: number): Promise<HTMLCanvasElement>
-async function getPdfCanvas(data: ArrayBuffer, pageRange: [number, number]): Promise<HTMLCanvasElement[]>
-async function getPdfCanvas(data: ArrayBuffer, pageRange: number | [number, number]): Promise<HTMLCanvasElement | HTMLCanvasElement[]> {
+async function getPdfCanvas(data: ArrayBuffer, pageRange?: [number, number]): Promise<HTMLCanvasElement[]>
+async function getPdfCanvas(data: ArrayBuffer, pageRange?: number | [number, number]): Promise<HTMLCanvasElement | HTMLCanvasElement[]> {
   const pdfDocument = await pdfjs.getDocument(data).promise;
   const maxPage = pdfDocument.numPages;
 
-  let range: Range = { start: 0, end: 0 };
-  if (Array.isArray(pageRange)) {
-    range = { start: Math.max(1, range[0]), end: Math.min(maxPage, range[1]) };
+  let range: Range = { start: 1, end: Infinity };
+  if (Array.isArray(pageRange) || !pageRange) {
+    range = { start: Math.max(1, range.start), end: Math.min(maxPage, range.end) };
   } else {
     const pageNo = Math.min(maxPage, Math.max(pageRange, 1));
     range = { start: pageNo, end: pageNo };

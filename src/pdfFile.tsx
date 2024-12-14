@@ -3,7 +3,7 @@ import { Skeleton, SkeletonItem } from '@fluentui/react-components';
 import { getPdfCanvas } from './pdfUtils.ts';
 import './pdfFile.less';
 
-function CanvasContainer(props: { element: HTMLCanvasElement }) {
+function PdfPage(props: { element: HTMLCanvasElement }) {
   const { element } = props;
   const divRef = useRef<HTMLDivElement>();
 
@@ -20,7 +20,7 @@ function CanvasContainer(props: { element: HTMLCanvasElement }) {
   }, [element]);
 
   return (
-    <div style={{ width: '100%', height: '100%' }} ref={divRef} />
+    <div ref={divRef} />
   );
 }
 
@@ -38,22 +38,20 @@ export function PdfFile(props: PdfFileProps) {
   const id = useId();
 
   const fetchCover = async () => {
-    const stream = await data;
-    const cover = await getPdfCanvas(stream, 1);
-    setCanvasNode([<CanvasContainer key="1" element={cover} />]);
+    const cover = await getPdfCanvas(await data, 1);
+    setCanvasNode([<PdfPage key="1" element={cover} />]);
     setReady(true);
   };
 
   const fetchAll = async () => {
-    const stream = await data;
-    const covers = await getPdfCanvas(stream, [1, Infinity]);
-    setCanvasNode(covers.map((cover, index) => <CanvasContainer key={index} element={cover} />));
+    const covers = await getPdfCanvas(await data);
+    setCanvasNode(covers.map((cover, index) => <PdfPage key={index} element={cover} />));
     setReady(true);
   };
 
   useEffect(() => {
     setReady(false);
-    void fetchCover();
+    void fetchAll();
   }, [modifiedTime, fileName]);
 
   return (
