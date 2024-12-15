@@ -16,7 +16,7 @@ export default tsEslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': 'off',
       'react-hooks/exhaustive-deps': 'off',
       'semi': ['warn', 'always'],
       'quotes': ['warn', 'single'],
